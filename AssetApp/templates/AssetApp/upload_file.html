@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Parse File</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2em;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .output {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload and Parse File</h1>
+        <form id="uploadForm">
+            <input type="file" id="fileInput" accept=".txt,.csv,.json,.xml,.pdf" required />
+            <button type="button" id="uploadButton">Upload</button>
+        </form>
+        <div class="output" id="output"></div>
+    </div>
+
+    <!-- Include PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', () => {
+            const fileInput = document.getElementById('fileInput');
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            if (fileInput.files.length === 0) {
+                output.textContent = 'Please select a file.';
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const fileType = file.type;
+
+            if (fileType === 'application/pdf') {
+                // Parse PDF file
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const typedArray = new Uint8Array(e.target.result);
+                    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+                    pdfjsLib.getDocument(typedArray).promise.then(function (pdf) {
+                        let pdfText = '';
+                        const pagePromises = [];
+
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            pagePromises.push(
+                                pdf.getPage(i).then(function (page) {
+                                    return page.getTextContent().then(function (textContent) {
+                                        textContent.items.forEach(item => {
+                                            pdfText += item.str + ' ';
+                                        });
+                                    });
+                                })
+                            );
+                        }
+
+                        Promise.all(pagePromises).then(() => {
+                            const prNumbers = pdfText.match(/Document No:\s+(\d+)/);
+                            if (prNumbers && prNumbers.length > 0) {
+                                output.innerHTML = `<strong>Extracted PR Numbers:</strong><br>${prNumbers.join('<br>')}`;
+                            } else {
+                                output.textContent = 'No PR numbers found in the PDF.';
+                            }
+                        }).catch(error => {
+                            output.textContent = 'Error parsing PDF: ' + error.message;
+                        });
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
+            } else {
+                // Handle text-based files
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const content = e.target.result;
+
+                    // Extract PR numbers (example: "PR12345")
+                    const prNumbers = content.match(/PR\d+/g);
+
+                    if (prNumbers && prNumbers.length > 0) {
+                        output.innerHTML = `<strong>Extracted PR Numbers:</strong><br>${prNumbers.join('<br>')}`;
+                    } else {
+                        output.textContent = 'No PR numbers found in the file.';
+                    }
+                };
+
+                reader.onerror = function () {
+                    output.textContent = 'Failed to read the file.';
+                };
+
+                reader.readAsText(file);
+            }
+        });
+    </script>
+</body>
+</html>
+

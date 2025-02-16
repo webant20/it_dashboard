@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Bulk Upload Assets</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>Upload an Excel file containing asset details. Use the <a href="/media/sample_asset_upload.xlsx">sample file</a> as a template.</p>
+    <input type="file" name="file" required>
+    <button type="submit" class="button">Upload</button>
+</form>
+{% endblock %}
