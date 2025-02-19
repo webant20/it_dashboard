@@ -48,6 +48,7 @@ class AssetType(models.Model):
 class Asset(models.Model):
     asset_id = models.AutoField(primary_key=True)
     asset_type = models.ForeignKey(AssetType, on_delete=models.CASCADE)
+    asset_description = models.CharField(max_length=200)
     serial_number = models.CharField(max_length=100)
     po_number = models.ForeignKey(PO, on_delete=models.CASCADE, null=True, blank=True)
     sap_asset_id = models.CharField(max_length=100, null=True, blank=True)

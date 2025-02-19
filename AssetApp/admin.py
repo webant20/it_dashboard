@@ -231,8 +231,8 @@ class AssetAdmin(admin.ModelAdmin):
                         asset, created = Asset.objects.update_or_create(
                             serial_number=row['serial_number'],
                             defaults={
-                                "asset_type": asset_type,
-                                "po_number": po_number,
+                                #"asset_type": asset_type,
+                                #"po_number": po_number,
                                 "sap_asset_id": row['sap_asset_id'],
                                 "installation_date": row['installation_date'],
                                 "warranty_start_date": row['warranty_start_date'],
