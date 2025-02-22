@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+import numpy as np
 from django.contrib import admin, messages
 from django.shortcuts import render, redirect
 from django.urls import path
@@ -213,6 +214,8 @@ class AssetAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
+  
+
     def bulk_upload_view(self, request):
         if request.method == "POST" and request.FILES.get("file"):
             file = request.FILES["file"]
@@ -220,19 +223,25 @@ class AssetAdmin(admin.ModelAdmin):
                 # Read the uploaded Excel file into a pandas DataFrame
                 data = pd.read_excel(file)
 
+                # Replace NaN with None for proper handling
+                data = data.replace({np.nan: None})
+
                 # Iterate over each row in the DataFrame
                 for _, row in data.iterrows():
                     try:
                         # Validate Foreign Keys
                         asset_type = AssetType.objects.get(name=row['asset_type'])
-                        po_number = PO.objects.get(po_number=row['po_number'])
+
+                        po_number = None  # Default to None if PO number is empty
+                        if row['po_number']:  # Check if PO number is not empty or None
+                            po_number = PO.objects.get(po_number=row['po_number'])
 
                         # Create or update the Asset object
                         asset, created = Asset.objects.update_or_create(
                             serial_number=row['serial_number'],
                             defaults={
-                                #"asset_type": asset_type,
-                                #"po_number": po_number,
+                                "asset_type": asset_type,
+                                "po_number": po_number,  # Assign None if empty
                                 "sap_asset_id": row['sap_asset_id'],
                                 "installation_date": row['installation_date'],
                                 "warranty_start_date": row['warranty_start_date'],
@@ -263,6 +272,7 @@ class AssetAdmin(admin.ModelAdmin):
 
         # If GET request, render the bulk upload form
         return render(request, "AssetApp/bulk_upload.html", {"title": "Bulk Upload Assets"})
+
 
 admin.site.register(Asset, AssetAdmin)
 

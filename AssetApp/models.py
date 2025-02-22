@@ -22,7 +22,7 @@ class PR(models.Model):
 # PO Model
 class PO(models.Model):
     po_number = models.CharField(max_length=100, unique=True)
-    pr_number = models.ForeignKey(PR, on_delete=models.CASCADE)
+    pr_number = models.ForeignKey(PR, on_delete=models.CASCADE,null=True, blank=True)
     create_date = models.DateField()
     class Status(models.TextChoices):
         OPEN = 'Open', _('Open')

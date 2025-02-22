@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',  # Database engine
         'NAME': 'itdashboard',    # Database name
         'USER': 'itdashboard_usr',     # Database user
-        'PASSWORD': 'Oil@123',               # Database password
+        'PASSWORD': 'Oil@1234',               # Database password
         'HOST': 'localhost',                       # Database host (use 'localhost' for local)
         'PORT': '5432',                            # Database port (default is 5432)
     }
