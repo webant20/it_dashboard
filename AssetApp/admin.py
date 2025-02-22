@@ -204,7 +204,10 @@ from django.urls import path
 from .models import Asset, AssetType, PO
 
 class AssetAdmin(admin.ModelAdmin):
-    list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number')
+    list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number','asset_description')
+    
+    search_fields = ['serial_number', 'asset_type__name', 'po_number__po_number', 'asset_description']
+
     change_list_template = "AssetApp/asset_changelist.html"  # To include the "Bulk Upload" button
 
     def get_urls(self):
@@ -272,6 +275,9 @@ class AssetAdmin(admin.ModelAdmin):
 
         # If GET request, render the bulk upload form
         return render(request, "AssetApp/bulk_upload.html", {"title": "Bulk Upload Assets"})
+    
+   
+
 
 
 admin.site.register(Asset, AssetAdmin)
