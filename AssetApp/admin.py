@@ -7,7 +7,7 @@ from django.urls import path
 from django import forms
 from django_select2.forms import Select2Widget
 from django.utils.safestring import mark_safe
-from .models import PR, PO, Asset, AssetType, AssetIssue
+from .models import PR, PO, Asset, AssetType, AssetIssue, Contract, ContractNotification, SMTPSettings
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +20,9 @@ class PRAdminForm(forms.ModelForm):
 class PRAdmin(admin.ModelAdmin):
     form = PRAdminForm
     list_display = ('pr_number', 'description', 'create_date', 'status')
+    search_fields = ['pr_number', 'description', 'create_date', 'status']
+    list_filter = ['status']
+    
 
     def parse_button(self, obj):
         return mark_safe(
@@ -110,7 +113,7 @@ class PRAdmin(admin.ModelAdmin):
 class POAdminForm(forms.ModelForm):
     class Meta:
         model = PO
-        fields = ['po_number', 'pr_number', 'create_date', 'status', 'attachment']
+        fields = ['po_number','description' ,'pr_number', 'create_date', 'status', 'attachment']
 
     pr_number = forms.ModelChoiceField(
         queryset=PR.objects.all(),
@@ -123,7 +126,11 @@ class POAdminForm(forms.ModelForm):
 class POAdmin(admin.ModelAdmin):
     form = POAdminForm
 
-    list_display = ('po_number', 'pr_number', 'create_date', 'status')
+    list_display = ('po_number', 'pr_number', 'create_date', 'status','description')
+    
+
+    search_fields = ['po_number', 'pr_number', 'create_date', 'status']
+    list_display_links = ('po_number','pr_number',)
 
     def parse_button(self, obj):
         return mark_safe(
@@ -207,6 +214,8 @@ class AssetAdmin(admin.ModelAdmin):
     list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number','asset_description')
     
     search_fields = ['serial_number', 'asset_type__name', 'po_number__po_number', 'asset_description']
+    list_filter = ['asset_type', 'po_number']
+    list_display_links = ('serial_number', 'po_number')
 
     change_list_template = "AssetApp/asset_changelist.html"  # To include the "Bulk Upload" button
 
@@ -287,3 +296,22 @@ admin.site.register(PO, POAdmin)
 admin.site.register(AssetType)
 admin.site.register(AssetIssue)
 
+from django.contrib import admin
+from .models import Contract, ContractNotification, SMTPSettings
+
+@admin.register(Contract)
+class ContractAdmin(admin.ModelAdmin):
+    list_display = ('contract_number', 'description', 'start_date', 'end_date', 'status', 'pr_number', 'wo_number')
+    search_fields = ('contract_number', 'description', 'pr_number__pr_number', 'wo_number__po_number')
+    list_filter = ('status', 'start_date', 'end_date')
+    readonly_fields = ('status',)
+
+@admin.register(ContractNotification)
+class ContractNotificationAdmin(admin.ModelAdmin):
+    list_display = ('contract', 'email_ids', 'days_before_expiry')
+    search_fields = ('contract__contract_number', 'email_ids')
+
+@admin.register(SMTPSettings)
+class SMTPSettingsAdmin(admin.ModelAdmin):
+    list_display = ('smtp_server', 'smtp_port', 'smtp_username', 'use_tls', 'use_ssl')
+    search_fields = ('smtp_server', 'smtp_username')
