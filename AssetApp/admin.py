@@ -297,14 +297,24 @@ admin.site.register(AssetType)
 admin.site.register(AssetIssue)
 
 from django.contrib import admin
-from .models import Contract, ContractNotification, SMTPSettings
+from .models import Contract, ContractNotification, SMTPSettings, ContractAttachment
+
+class ContractAttachmentInline(admin.TabularInline):  # Inline for attachments
+    model = ContractAttachment
+    extra = 1  # Show one empty attachment field by default
+    fields = ('file',)  # Show only the file upload field
 
 @admin.register(Contract)
 class ContractAdmin(admin.ModelAdmin):
-    list_display = ('contract_number', 'description', 'start_date', 'end_date', 'status', 'pr_number', 'wo_number')
-    search_fields = ('contract_number', 'description', 'pr_number__pr_number', 'wo_number__po_number')
+    list_display = ('contract_number', 'description', 'start_date', 'end_date', 'status')
+    search_fields = ('contract_number', 'description')
     list_filter = ('status', 'start_date', 'end_date')
-    readonly_fields = ('status',)
+    inlines = [ContractAttachmentInline]  # Add inline attachments
+
+@admin.register(ContractAttachment)
+class ContractAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('contract', 'file', 'uploaded_at')
+    search_fields = ('contract__contract_number',)
 
 @admin.register(ContractNotification)
 class ContractNotificationAdmin(admin.ModelAdmin):

@@ -81,13 +81,16 @@ class AssetIssue(models.Model):
     def __str__(self):
         return f"Issue {self.asset_id.asset_id} to {self.issued_to}"
     
+from django.db import models
+from django.utils import timezone
+
 class Contract(models.Model):
     contract_number = models.CharField(max_length=100, primary_key=True)
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    pr_number = models.ForeignKey(PR, on_delete=models.CASCADE, blank=True, null=True)
-    wo_number = models.ForeignKey(PO, on_delete=models.CASCADE, blank=True, null=True)
+    pr_number = models.ForeignKey('PR', on_delete=models.CASCADE, blank=True, null=True)
+    wo_number = models.ForeignKey('PO', on_delete=models.CASCADE, blank=True, null=True)
 
     class Status(models.TextChoices):
         ACTIVE = 'Active', 'Active'
@@ -107,20 +110,39 @@ class Contract(models.Model):
         else:
             self.status = self.Status.EXPIRED
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         return self.contract_number
 
+
+class ContractAttachment(models.Model):
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE, related_name='attachments')
+    file = models.FileField(upload_to='contracts/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Attachment for {self.contract.contract_number}"
+
+
+from django.db import models
+
 class ContractNotification(models.Model):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    email_ids = models.TextField(help_text="Comma-separated email addresses")
-    days_before_expiry = models.PositiveIntegerField(help_text="Days before expiry to trigger notification")
+    email_ids = models.TextField(help_text="Comma-separated email addresses")  # Keeping as a string
+    days_before_expiry = models.TextField(help_text="Comma-separated days before expiry")  # Storing as a string
 
     def get_email_list(self):
-        return [email.strip() for email in self.email_ids.split(',')]
-    
+        """Convert comma-separated string to a list of valid email addresses."""
+        return [email.strip() for email in self.email_ids.split(',') if email.strip()]
+
+    def get_days_list(self):
+        """Convert comma-separated days_before_expiry into a list of integers."""
+        return [int(day.strip()) for day in self.days_before_expiry.split(',') if day.strip().isdigit()]
+
     def __str__(self):
-        return f"Notification for {self.contract.contract_number}"
+        return f"Notification for {self.contract.contract_number if self.contract else 'Unknown Contract'}"
+
+
 
 class SMTPSettings(models.Model):
     smtp_server = models.CharField(max_length=255)
