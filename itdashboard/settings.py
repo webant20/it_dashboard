@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'incidentApp',
     'AssetApp',
     'django_select2',
+    'PlannedActivityApp',
 ]
 
 MEDIA_URL = '/media/'
