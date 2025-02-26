@@ -39,6 +39,7 @@ class PO(models.Model):
     def __str__(self):
         return self.po_number
 
+
 # AssetType Model
 class AssetType(models.Model):
     name = models.CharField(max_length=100)
@@ -61,6 +62,8 @@ class Asset(models.Model):
     amc_start_date = models.DateField(null=True, blank=True)
     amc_end_date = models.DateField(null=True, blank=True)
     amc_provider = models.CharField(max_length=100, null=True, blank=True)
+    
+   
 
     class Meta:
         constraints = [
@@ -69,7 +72,6 @@ class Asset(models.Model):
 
     def __str__(self):
         return f"Asset {self.asset_id}"
-
 
 # Asset Issue Model
 class AssetIssue(models.Model):
@@ -155,4 +157,21 @@ class SMTPSettings(models.Model):
     def __str__(self):
         return f"SMTP Settings ({self.smtp_server})"
 
+
+
+
+
+
+class EndUser(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ]
+    
+    name = models.CharField(max_length=255, unique=True,default="IT")
+    location = models.TextField(default="OILHOUSE")
+    status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='active')
+
+    def __str__(self):
+        return self.name
 

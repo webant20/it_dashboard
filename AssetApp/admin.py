@@ -7,7 +7,7 @@ from django.urls import path
 from django import forms
 from django_select2.forms import Select2Widget
 from django.utils.safestring import mark_safe
-from .models import PR, PO, Asset, AssetType, AssetIssue, Contract, ContractNotification, SMTPSettings
+from .models import PR, PO, Asset, AssetType, AssetIssue, Contract, ContractNotification, SMTPSettings,EndUser
 
 logger = logging.getLogger(__name__)
 
@@ -216,6 +216,7 @@ class AssetAdmin(admin.ModelAdmin):
     search_fields = ['serial_number', 'asset_type__name', 'po_number__po_number', 'asset_description']
     list_filter = ['asset_type', 'po_number']
     list_display_links = ('serial_number', 'po_number')
+    list_editable = ('asset_type','asset_description')  # Now editable from list view
 
     change_list_template = "AssetApp/asset_changelist.html"  # To include the "Bulk Upload" button
 
@@ -325,3 +326,9 @@ class ContractNotificationAdmin(admin.ModelAdmin):
 class SMTPSettingsAdmin(admin.ModelAdmin):
     list_display = ('smtp_server', 'smtp_port', 'smtp_username', 'use_tls', 'use_ssl')
     search_fields = ('smtp_server', 'smtp_username')
+
+@admin.register(EndUser)
+class EndUserAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'status')
+    search_fields = ('name', 'location')
+    list_filter = ('status',)
