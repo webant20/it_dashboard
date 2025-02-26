@@ -204,21 +204,28 @@ class POAdmin(admin.ModelAdmin):
     parse_button.short_description = "Parse PO File"
     readonly_fields = ["parse_button"]
 
-import pandas as pd
-from django.contrib import admin, messages
-from django.shortcuts import render, redirect
+
+from django.contrib import admin
 from django.urls import path
-from .models import Asset, AssetType, PO
+from django.shortcuts import render, redirect
+from django.contrib import messages
+import pandas as pd
+import numpy as np
+from .models import Asset, AssetType, PO, EndUser
 
 class AssetAdmin(admin.ModelAdmin):
-    list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number','asset_description')
-    
-    search_fields = ['serial_number', 'asset_type__name', 'po_number__po_number', 'asset_description']
-    list_filter = ['asset_type', 'po_number']
-    list_display_links = ('serial_number', 'po_number')
-    list_editable = ('asset_type','asset_description')  # Now editable from list view
+    list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number', 'asset_description', 'end_user', 'end_user_location', 'amc_contract')  
+    search_fields = ['serial_number', 'asset_type__name', 'po_number__po_number', 'asset_description', 'end_user__name', 'amc_contract__contract_number']
+    list_filter = ['asset_type', 'po_number', 'end_user', 'amc_contract']
+    list_display_links = ('serial_number', 'po_number', 'amc_contract')  # Added amc_contract as a display link
+    list_editable = ('asset_type', 'asset_description', 'end_user')  # Editable EndUser in list view
 
-    change_list_template = "AssetApp/asset_changelist.html"  # To include the "Bulk Upload" button
+    change_list_template = "AssetApp/asset_changelist.html"  # Bulk Upload button
+
+    @admin.display(description="End User Location")
+    def end_user_location(self, obj):
+        """Fetches location from the associated EndUser model"""
+        return obj.end_user.location if obj.end_user else "N/A"
 
     def get_urls(self):
         urls = super().get_urls()
@@ -227,42 +234,29 @@ class AssetAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-  
-
     def bulk_upload_view(self, request):
         if request.method == "POST" and request.FILES.get("file"):
             file = request.FILES["file"]
             try:
-                # Read the uploaded Excel file into a pandas DataFrame
                 data = pd.read_excel(file)
+                data = data.replace({np.nan: None})  # Replace NaN with None
 
-                # Replace NaN with None for proper handling
-                data = data.replace({np.nan: None})
-
-                # Iterate over each row in the DataFrame
                 for _, row in data.iterrows():
                     try:
-                        # Validate Foreign Keys
                         asset_type = AssetType.objects.get(name=row['asset_type'])
+                        po_number = PO.objects.get(po_number=row['po_number']) if row['po_number'] else None
+                        end_user = EndUser.objects.get(name=row['end_user']) if row['end_user'] else None
+                        amc_contract = Contract.objects.get(contract_number=row['amc_contract']) if row.get('amc_contract') else None
 
-                        po_number = None  # Default to None if PO number is empty
-                        if row['po_number']:  # Check if PO number is not empty or None
-                            po_number = PO.objects.get(po_number=row['po_number'])
-
-                        # Create or update the Asset object
                         asset, created = Asset.objects.update_or_create(
                             serial_number=row['serial_number'],
                             defaults={
                                 "asset_type": asset_type,
-                                "po_number": po_number,  # Assign None if empty
+                                "po_number": po_number,
                                 "sap_asset_id": row['sap_asset_id'],
                                 "installation_date": row['installation_date'],
-                                "warranty_start_date": row['warranty_start_date'],
-                                "warranty_end_date": row['warranty_end_date'],
-                                "warranty_provider": row['warranty_provider'],
-                                "amc_start_date": row.get('amc_start_date'),
-                                "amc_end_date": row.get('amc_end_date'),
-                                "amc_provider": row.get('amc_provider'),
+                                "amc_contract": amc_contract,
+                                "end_user": end_user  # Assign end user
                             },
                         )
                         action = "created" if created else "updated"
@@ -272,6 +266,10 @@ class AssetAdmin(admin.ModelAdmin):
                         messages.error(request, f"Asset Type '{row['asset_type']}' not found.")
                     except PO.DoesNotExist:
                         messages.error(request, f"PO Number '{row['po_number']}' not found.")
+                    except EndUser.DoesNotExist:
+                        messages.error(request, f"End User '{row['end_user']}' not found.")
+                    except Contract.DoesNotExist:
+                        messages.error(request, f"Contract '{row['amc_contract']}' not found.")
                     except KeyError as e:
                         messages.error(request, f"Missing column in Excel file: {e}")
                     except Exception as e:
@@ -283,10 +281,7 @@ class AssetAdmin(admin.ModelAdmin):
                 messages.error(request, f"Error reading file: {e}")
                 return redirect("..")
 
-        # If GET request, render the bulk upload form
         return render(request, "AssetApp/bulk_upload.html", {"title": "Bulk Upload Assets"})
-    
-   
 
 
 
