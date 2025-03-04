@@ -1,6 +1,8 @@
 import logging
 import pandas as pd
 import numpy as np
+from django.urls import reverse
+from django.utils.html import format_html
 from django.contrib import admin, messages
 from django.shortcuts import render, redirect
 from django.urls import path
@@ -205,8 +207,7 @@ class POAdmin(admin.ModelAdmin):
     readonly_fields = ["parse_button"]
 
 
-from django.urls import reverse
-from django.utils.html import format_html
+
 
 class AssetAdmin(admin.ModelAdmin):
     list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number_link', 'asset_description', 'end_user', 'end_user_location', 'amc_contract_link')  
