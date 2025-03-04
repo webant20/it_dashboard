@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>IT Dashboard</h1>
+
+<!-- Filter Links -->
+<a href="?period=1m">Last 1 Month</a> | 
+<a href="?period=6m">Last 6 Months</a> | 
+<a href="?period=1y">Last 1 Year</a>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Asset Chart -->
+<canvas id="assetChart"></canvas>
+<script>
+    var ctx = document.getElementById("assetChart").getContext("2d");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Added", "Issued", "Written Off"],
+            datasets: [{
+                label: "Asset Data",
+                data: [{{ num_assets_added }}, {{ num_assets_issued }}, {{ num_assets_written_off }}],
+                backgroundColor: ["blue", "green", "red"]
+            }]
+        }
+    });
+</script>
+
+<!-- Procurement Chart -->
+<canvas id="procurementChart"></canvas>
+<script>
+    var ctx = document.getElementById("procurementChart").getContext("2d");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Open PRs", "PRs Raised", "PRs Processed"],
+            datasets: [{
+                label: "Procurement Data",
+                data: [{{ num_open_prs }}, {{ num_prs_raised }}, {{ num_prs_processed }}],
+                backgroundColor: ["orange", "purple", "cyan"]
+            }]
+        }
+    });
+</script>
+
+<!-- Incident Chart -->
+<canvas id="incidentChart"></canvas>
+<script>
+    var ctx = document.getElementById("incidentChart").getContext("2d");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Open Incidents", "Incidents Raised"],
+            datasets: [{
+                label: "Incident Data",
+                data: [{{ num_open_incidents }}, {{ num_incidents_raised }}],
+                backgroundColor: ["red", "blue"]
+            }]
+        }
+    });
+</script>
+
+{% endblock %}

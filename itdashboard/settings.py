@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-qullcx2_pw#+m1ptkb_ijw8k!@@k1xq=5m@bj4*(298t4d=f8v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','172.17.0.50']
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'AssetApp',
     'django_select2',
     'PlannedActivityApp',
+    'cartridge_stock',
+    'DashboardApp',
 ]
 
 MEDIA_URL = '/media/'
@@ -62,7 +64,11 @@ ROOT_URLCONF = 'itdashboard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "AssetApp/templates"],
+        'DIRS': [
+            BASE_DIR / "templates",  # Global templates directory
+            BASE_DIR / "DashboardApp/templates",
+            BASE_DIR / "AssetApp/templates"
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

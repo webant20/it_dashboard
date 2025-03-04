@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.conf import settings  # Import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from AssetApp import views
 
+
 urlpatterns = [
+    path("", include("DashboardApp.urls")),  # Set DashboardApp as home page
     path('admin/', admin.site.urls),
     path('upload/', views.upload_file_page, name='upload_file_page'),  # New file upload page
     path('upload/parse/', views.parse_file, name='parse_file'),        # Parsing logic endpoint
