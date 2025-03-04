@@ -148,13 +148,13 @@ class ContractNotification(models.Model):
     def __str__(self):
         return f"Notification for {self.contract.contract_number if self.contract else 'Unknown Contract'}"
 
-
 # SMTP Settings
 class SMTPSettings(models.Model):
     smtp_server = models.CharField(max_length=255)
     smtp_port = models.IntegerField()
-    smtp_username = models.CharField(max_length=255)
-    smtp_password = models.CharField(max_length=255)
+    smtp_sender_email = models.CharField(max_length=255)  # Sender email
+    smtp_username = models.CharField(max_length=255, blank=True, null=True)  # Username (optional)
+    smtp_password = models.CharField(max_length=255, blank=True, null=True)  # Password (optional)
     use_tls = models.BooleanField(default=True)
     use_ssl = models.BooleanField(default=False)
 

@@ -42,3 +42,21 @@
 2025-02-25 17:47:11,489 - INFO - Found 1 notifications to process.
 2025-02-25 17:47:11,495 - INFO - Contract 611888: Days remaining: 3, Notification days: [3, 10]
 2025-02-25 17:47:16,065 - INFO - Notification email sent successfully for contract 611888 to tituraj.jnv@gmail.com
+2025-03-04 15:30:23,997 - INFO - Script started at 2025-03-04
+2025-03-04 15:30:24,206 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
+2025-03-04 15:30:24,248 - INFO - Found 1 notifications to process.
+2025-03-04 15:30:24,292 - INFO - Contract 611888: Days remaining: -4, Notification days: [3, 10]
+2025-03-04 15:32:57,333 - INFO - Script started at 2025-03-04
+2025-03-04 15:32:57,370 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
+2025-03-04 15:32:57,372 - INFO - Found 1 notifications to process.
+2025-03-04 15:32:57,377 - INFO - Contract 611888: Days remaining: -3, Notification days: [3, 10]
+2025-03-04 15:33:44,299 - INFO - Script started at 2025-03-04
+2025-03-04 15:33:44,325 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
+2025-03-04 15:33:44,327 - INFO - Found 1 notifications to process.
+2025-03-04 15:33:44,331 - INFO - Contract 611888: Days remaining: 3, Notification days: [3, 10]
+2025-03-04 15:36:18,379 - INFO - Script started at 2025-03-04
+2025-03-04 15:39:05,072 - INFO - Script started at 2025-03-04
+2025-03-04 15:39:05,100 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
+2025-03-04 15:39:05,102 - INFO - Found 1 notifications to process.
+2025-03-04 15:39:05,108 - INFO - Contract 611888: Days remaining: 3, Notification days: [3, 10]
+2025-03-04 15:39:08,842 - INFO - Notification email sent successfully for contract 611888 to tituraj.jnv@gmail.com

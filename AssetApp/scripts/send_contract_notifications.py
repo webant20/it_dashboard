@@ -1,4 +1,4 @@
-import os
+import os 
 import sys
 import django
 import logging
@@ -25,8 +25,8 @@ django.setup()
 # Import models
 from AssetApp.models import ContractNotification, SMTPSettings
 
-# Path to your test_email.py script
-TEST_EMAIL_SCRIPT = "/home/it_admin/django_projects/it_dashboard/AssetApp/scripts/send_email.py"
+# Path to your send_email.py script
+SEND_EMAIL_SCRIPT = "/home/it_admin/django_projects/it_dashboard/AssetApp/scripts/send_email.py"
 
 def send_contract_expiry_notifications():
     today = timezone.now().date()
@@ -40,8 +40,18 @@ def send_contract_expiry_notifications():
         print("No SMTP settings found. Exiting.")
         return
 
-    logger.info(f"Using SMTP Server: {smtp_settings.smtp_server}, Email: {smtp_settings.smtp_username}")
-    print(f"Using SMTP Server: {smtp_settings.smtp_server}, Email: {smtp_settings.smtp_username}")
+    smtp_server = smtp_settings.smtp_server
+    smtp_port = smtp_settings.smtp_port
+    smtp_user = smtp_settings.smtp_username.strip() if smtp_settings.smtp_username else ""
+    smtp_password = smtp_settings.smtp_password if smtp_user else ""
+
+    if not smtp_server or not smtp_port:
+        logger.error("Incomplete SMTP settings. Exiting.")
+        print("Incomplete SMTP settings. Exiting.")
+        return
+
+    logger.info(f"Using SMTP Server: {smtp_server}, Port: {smtp_port}, User: {smtp_user if smtp_user else 'No Auth'}")
+    print(f"Using SMTP Server: {smtp_server}, Port: {smtp_port}, User: {smtp_user if smtp_user else 'No Auth'}")
 
     # Fetch notifications
     notifications = ContractNotification.objects.select_related("contract").all()
@@ -74,14 +84,17 @@ def send_contract_expiry_notifications():
             subject = f"Contract Expiry Alert: {contract.contract_number}"
             message = f"The contract '{contract.contract_number}' is expiring on {contract.end_date}."
 
-            # Send email using test_email.py script
+            # Send email using send_email.py script
             for email in email_list:
                 try:
                     command = [
-                        "python3", TEST_EMAIL_SCRIPT,
-                        smtp_settings.smtp_username,  # Sender email
-                        email,  # Receiver email
-                        smtp_settings.smtp_password,  # SMTP password
+                        "python3", SEND_EMAIL_SCRIPT,
+                        smtp_server,         # SMTP Server
+                        str(smtp_port),      # SMTP Port
+                        smtp_user,           # SMTP Username (empty if no auth)
+                        smtp_password,       # SMTP Password (empty if no auth)
+                        smtp_settings.smtp_sender_email,  # Sender email
+                        email,               # Receiver email
                         subject,
                         message
                     ]
