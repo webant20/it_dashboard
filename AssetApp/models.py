@@ -125,10 +125,12 @@ class AssetIssue(models.Model):
 class ContractAttachment(models.Model):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE, related_name='attachments')
     file = models.FileField(upload_to='contracts/')
+    description = models.TextField(blank=True, null=True)  # Added description field
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Attachment for {self.contract.contract_number}"
+        return f"Attachment for {self.contract.contract_number} - {self.description[:20] if self.description else 'No Description'}"
+
 
 
 # Contract Notifications

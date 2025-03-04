@@ -205,22 +205,34 @@ class POAdmin(admin.ModelAdmin):
     readonly_fields = ["parse_button"]
 
 
-from django.contrib import admin
-from django.urls import path
-from django.shortcuts import render, redirect
-from django.contrib import messages
-import pandas as pd
-import numpy as np
-from .models import Asset, AssetType, PO, EndUser
+from django.urls import reverse
+from django.utils.html import format_html
 
 class AssetAdmin(admin.ModelAdmin):
-    list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number', 'asset_description', 'end_user', 'end_user_location', 'amc_contract')  
+    list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number_link', 'asset_description', 'end_user', 'end_user_location', 'amc_contract_link')  
     search_fields = ['serial_number', 'asset_type__name', 'po_number__po_number', 'asset_description', 'end_user__name', 'amc_contract__contract_number']
     list_filter = ['asset_type', 'po_number', 'end_user', 'amc_contract']
-    list_display_links = ('serial_number', 'po_number', 'amc_contract')  # Added amc_contract as a display link
-    list_editable = ('asset_type', 'asset_description', 'end_user')  # Editable EndUser in list view
+    list_display_links = ('serial_number',)  # Keeping serial_number as a link
 
     change_list_template = "AssetApp/asset_changelist.html"  # Bulk Upload button
+
+    @admin.display(description="PO Number")
+    def po_number_link(self, obj):
+        """Generates a clickable link to the PO admin page."""
+        if obj.po_number:
+            url = reverse('admin:AssetApp_po_change', args=[obj.po_number.id])
+            return format_html('<a href="{}">{}</a>', url, obj.po_number.po_number)
+        return "-"
+
+    @admin.display(description="AMC Contract")
+    def amc_contract_link(self, obj):
+        """Generates a clickable link to the Contract admin page."""
+        if obj.amc_contract:
+            url = reverse('admin:AssetApp_contract_change', args=[obj.amc_contract.contract_number])  # Use contract_number instead of id
+            return format_html('<a href="{}">{}</a>', url, obj.amc_contract.contract_number)
+        return "-"
+
+
 
     @admin.display(description="End User Location")
     def end_user_location(self, obj):
@@ -283,8 +295,6 @@ class AssetAdmin(admin.ModelAdmin):
 
         return render(request, "AssetApp/bulk_upload.html", {"title": "Bulk Upload Assets"})
 
-
-
 admin.site.register(Asset, AssetAdmin)
 
 admin.site.register(PR, PRAdmin)
@@ -298,7 +308,7 @@ from .models import Contract, ContractNotification, SMTPSettings, ContractAttach
 class ContractAttachmentInline(admin.TabularInline):  # Inline for attachments
     model = ContractAttachment
     extra = 1  # Show one empty attachment field by default
-    fields = ('file',)  # Show only the file upload field
+    fields = ('file','description')  # Show only the file upload field
 
 @admin.register(Contract)
 class ContractAdmin(admin.ModelAdmin):
