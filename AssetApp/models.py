@@ -132,12 +132,16 @@ class ContractAttachment(models.Model):
         return f"Attachment for {self.contract.contract_number} - {self.description[:20] if self.description else 'No Description'}"
 
 
-
-# Contract Notifications
 class ContractNotification(models.Model):
+    ENABLED_CHOICES = [
+        ('yes', 'Yes'),
+        ('no', 'No'),
+    ]
+
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     email_ids = models.TextField(help_text="Comma-separated email addresses")  # Keeping as a string
     days_before_expiry = models.TextField(help_text="Comma-separated days before expiry")  # Storing as a string
+    enabled = models.CharField(max_length=3, choices=ENABLED_CHOICES, default='yes', help_text="Enable or disable notifications")
 
     def get_email_list(self):
         """Convert comma-separated string to a list of valid email addresses."""
@@ -148,7 +152,7 @@ class ContractNotification(models.Model):
         return [int(day.strip()) for day in self.days_before_expiry.split(',') if day.strip().isdigit()]
 
     def __str__(self):
-        return f"Notification for {self.contract.contract_number if self.contract else 'Unknown Contract'}"
+        return f"Notification for {self.contract.contract_number if self.contract else 'Unknown Contract'} ({self.enabled})"
 
 # SMTP Settings
 class SMTPSettings(models.Model):

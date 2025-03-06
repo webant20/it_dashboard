@@ -11,48 +11,32 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-# Incident model
+
+
 class Incident(models.Model):
-    PRIORITY_CHOICES = [
-        ('Low', 'Low'),
-        ('Medium', 'Medium'),
-        ('High', 'High'),
-        ('Critical', 'Critical'),
-    ]
     STATUS_CHOICES = [
         ('Open', 'Open'),
         ('In Progress', 'In Progress'),
-        ('Resolved', 'Resolved'),
-        ('Closed', 'Closed'),
+        ('Closed', 'Closed')
     ]
-
     title = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-    priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES, default='Low')
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Open')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_incidents")
-    reported_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='reported_incidents')
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_incidents')
+    description = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incidents_created',null=True,blank=True)
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incidents_reported',null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-        permissions = [
-            ("can_close_incident", "Can change status to closed"),
-        ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Open')
 
-# Attachment model
 class Attachment(models.Model):
-    incident = models.ForeignKey(Incident, on_delete=models.CASCADE, related_name='attachments')
     file_path = models.FileField(upload_to='attachments/')
-    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    incident = models.ForeignKey(Incident, on_delete=models.CASCADE, related_name='attachments', null=True, blank=True)
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='attachments', null=True, blank=True)
 
-# Comment model
 class Comment(models.Model):
     incident = models.ForeignKey(Incident, on_delete=models.CASCADE, related_name='comments')
     comment = models.TextField()
-    commented_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    commented_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 # Audit Log model
