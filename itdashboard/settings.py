@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'PlannedActivityApp',
     'cartridge_stock',
     'DashboardApp',
+    'dms',
 ]
 
 MEDIA_URL = '/media/'

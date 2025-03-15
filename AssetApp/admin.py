@@ -1,6 +1,7 @@
 import logging
 import pandas as pd
 import numpy as np
+from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib import admin, messages
@@ -9,7 +10,7 @@ from django.urls import path
 from django import forms
 from django_select2.forms import Select2Widget
 from django.utils.safestring import mark_safe
-from .models import PR, PO, Asset, AssetType, AssetIssue, Contract, ContractNotification, SMTPSettings,EndUser
+from .models import PR, PO, Asset, Location,AssetType, AssetIssue, Contract, ContractNotification, SMTPSettings,EndUser
 
 logger = logging.getLogger(__name__)
 
@@ -206,14 +207,26 @@ class POAdmin(admin.ModelAdmin):
     parse_button.short_description = "Parse PO File"
     readonly_fields = ["parse_button"]
 
-
-
-
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('location', 'office')
+    search_fields = ('location', 'office')
 class AssetAdmin(admin.ModelAdmin):
-    list_display = ('asset_id', 'serial_number', 'asset_type', 'po_number_link', 'asset_description', 'end_user', 'end_user_location', 'amc_contract_link')  
-    search_fields = ['serial_number', 'asset_type__name', 'po_number__po_number', 'asset_description', 'end_user__name', 'amc_contract__contract_number']
-    list_filter = ['asset_type', 'po_number', 'end_user', 'amc_contract']
-    list_display_links = ('serial_number',)  # Keeping serial_number as a link
+    list_display = (
+        'asset_id', 'sap_asset_id', 'serial_number', 'asset_type', 'asset_description', 
+        'installation_date', 'amc_start_date', 'amc_end_date', 'amc_contract_link', 
+        'warranty_start_date', 'warranty_end_date', 'po_number_link', 'end_user', 'location'
+    )
+    search_fields = [
+        'serial_number', 'sap_asset_id', 'asset_type__name', 'po_number__po_number', 
+        'asset_description', 'end_user__name', 'amc_contract__contract_number', 
+        'location__location', 'location__office'  # ✅ Added office field
+    ]
+    list_filter = ['asset_type', 'po_number', 'end_user', 'amc_contract', 'location']
+    list_display_links = ('asset_id',)  # Keeping asset_id as a link
+    ordering = [models.F('installation_date').desc(nulls_last=True)]  # Sort by installation_date descending, blank at bottom
+
+
 
     change_list_template = "AssetApp/asset_changelist.html"  # Bulk Upload button
 
@@ -235,10 +248,10 @@ class AssetAdmin(admin.ModelAdmin):
 
 
 
-    @admin.display(description="End User Location")
-    def end_user_location(self, obj):
-        """Fetches location from the associated EndUser model"""
-        return obj.end_user.location if obj.end_user else "N/A"
+    # @admin.display(description="End User Location")
+    # def end_user_location(self, obj):
+    #     """Fetches location from the associated EndUser model"""
+    #     return obj.end_user.location if obj.end_user else "N/A"
 
     def get_urls(self):
         urls = super().get_urls()

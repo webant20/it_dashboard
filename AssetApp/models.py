@@ -86,6 +86,19 @@ class AssetType(models.Model):
         return self.name
 
 
+class Location(models.Model):
+    OFFICE_CHOICES = [
+        ('OILHOUSE', 'OILHOUSE'),
+        ('E&D Dte', 'E&D Dte'),
+        ('Shastri Bhawan MoPNG', 'Shastri Bhawan MoPNG'),
+    ]
+
+    location = models.CharField(max_length=255)
+    office = models.CharField(max_length=50, choices=OFFICE_CHOICES)
+
+    def __str__(self):
+        return f"{self.location} - {self.office}"
+
 # Asset Model
 class Asset(models.Model):
     asset_id = models.AutoField(primary_key=True)
@@ -95,6 +108,11 @@ class Asset(models.Model):
     po_number = models.ForeignKey(PO, on_delete=models.CASCADE, null=True, blank=True)
     sap_asset_id = models.CharField(max_length=100, null=True, blank=True)
     installation_date = models.DateField(null=True, blank=True)
+    location = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True, blank=True)
+    amc_start_date = models.DateField(null=True, blank=True)
+    amc_end_date = models.DateField(null=True, blank=True)
+    warranty_start_date = models.DateField(null=True, blank=True)
+    warranty_end_date = models.DateField(null=True, blank=True)
 
     # New Field: AMC Contract Reference
     amc_contract = models.ForeignKey(Contract, on_delete=models.SET_NULL, null=True, blank=True, related_name="assets_under_amc")
