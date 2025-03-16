@@ -18,7 +18,7 @@ class PR(models.Model):
         choices=Status.choices,
         default=Status.OPEN
     )
-    attachment = models.FileField(upload_to='pr_attachments/')
+    # attachment = models.FileField(upload_to='pr_attachments/')
 
     def __str__(self):
         return self.pr_number
