@@ -85,19 +85,12 @@ class AssetType(models.Model):
     def __str__(self):
         return self.name
 
-
 class Location(models.Model):
-    OFFICE_CHOICES = [
-        ('OILHOUSE', 'OILHOUSE'),
-        ('E&D Dte', 'E&D Dte'),
-        ('Shastri Bhawan MoPNG', 'Shastri Bhawan MoPNG'),
-    ]
-
-    location = models.CharField(max_length=255)
-    office = models.CharField(max_length=50, choices=OFFICE_CHOICES)
+    location = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return f"{self.location} - {self.office}"
+        return self.location
+
 
 # Asset Model
 class Asset(models.Model):
@@ -193,9 +186,9 @@ class EndUser(models.Model):
         ('inactive', 'Inactive'),
     ]
 
-    name = models.CharField(max_length=255, unique=True, default="IT")
-    location = models.TextField(default="OILHOUSE")
+    name = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='active')
 
     def __str__(self):
         return self.name
+

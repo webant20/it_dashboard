@@ -238,8 +238,10 @@ class POAdmin(admin.ModelAdmin):
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('location', 'office')
-    search_fields = ('location', 'office')
+    list_display = ('location',)
+    search_fields = ('location__icontains',)
+    ordering = ('location',)
+
 class AssetAdmin(admin.ModelAdmin):
     list_display = (
         'asset_id', 'sap_asset_id', 'serial_number', 'asset_type', 'asset_description', 
@@ -288,7 +290,7 @@ class AssetAdmin(admin.ModelAdmin):
             path('bulk-upload/', self.bulk_upload_view, name='asset_bulk_upload'),
         ]
         return custom_urls + urls
-
+        
     def bulk_upload_view(self, request):
         if request.method == "POST" and request.FILES.get("file"):
             file = request.FILES["file"]
@@ -298,22 +300,44 @@ class AssetAdmin(admin.ModelAdmin):
 
                 for _, row in data.iterrows():
                     try:
+                        # Fetching Foreign Key References
                         asset_type = AssetType.objects.get(name=row['asset_type'])
-                        po_number = PO.objects.get(po_number=row['po_number']) if row['po_number'] else None
-                        end_user = EndUser.objects.get(name=row['end_user']) if row['end_user'] else None
+                            
+                        # Convert PO number to string and strip '.0' if it exists
+                        po_number = str(row['po_number']).rstrip('.0') if row.get('po_number') else None
+                        po_number = PO.objects.get(po_number=po_number) if row.get('po_number') else None
+                        # po_number = PO.objects.get(po_number=row['po_number']) if row.get('po_number') else None
+                        end_user = EndUser.objects.get(name=row['end_user']) if row.get('end_user') else None
                         amc_contract = Contract.objects.get(contract_number=row['amc_contract']) if row.get('amc_contract') else None
+                        # office = Location.objects.get(office=row['office']) if row.get('office') else None
+                        location = Location.objects.get(location=row['location']) if row.get('location') else None
 
+                        # Handle Dates with Proper Conversion
+                        installation_date = pd.to_datetime(row['installation_date']).date() if row.get('installation_date') else None
+                        amc_start_date = pd.to_datetime(row['amc_start_date']).date() if row.get('amc_start_date') else None
+                        amc_end_date = pd.to_datetime(row['amc_end_date']).date() if row.get('amc_end_date') else None
+                        warranty_start_date = pd.to_datetime(row['warranty_start_date']).date() if row.get('warranty_start_date') else None
+                        warranty_end_date = pd.to_datetime(row['warranty_end_date']).date() if row.get('warranty_end_date') else None
+
+                        # Create or Update the Asset
                         asset, created = Asset.objects.update_or_create(
                             serial_number=row['serial_number'],
                             defaults={
                                 "asset_type": asset_type,
+                                "asset_description": row.get('asset_description', ''),
                                 "po_number": po_number,
-                                "sap_asset_id": row['sap_asset_id'],
-                                "installation_date": row['installation_date'],
+                                "sap_asset_id": row.get('sap_asset_id', ''),
+                                "installation_date": installation_date,
+                                "location": location,
+                                "amc_start_date": amc_start_date,
+                                "amc_end_date": amc_end_date,
+                                "warranty_start_date": warranty_start_date,
+                                "warranty_end_date": warranty_end_date,
                                 "amc_contract": amc_contract,
-                                "end_user": end_user  # Assign end user
+                                "end_user": end_user
                             },
                         )
+
                         action = "created" if created else "updated"
                         messages.success(request, f"Asset {asset.serial_number} {action} successfully.")
 
@@ -325,6 +349,8 @@ class AssetAdmin(admin.ModelAdmin):
                         messages.error(request, f"End User '{row['end_user']}' not found.")
                     except Contract.DoesNotExist:
                         messages.error(request, f"Contract '{row['amc_contract']}' not found.")
+                    except Location.DoesNotExist:
+                        messages.error(request, f"Location '{row['location']}' not found.")
                     except KeyError as e:
                         messages.error(request, f"Missing column in Excel file: {e}")
                     except Exception as e:
@@ -377,6 +403,6 @@ class SMTPSettingsAdmin(admin.ModelAdmin):
 
 @admin.register(EndUser)
 class EndUserAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'status')
-    search_fields = ('name', 'location')
+    list_display = ('name', 'status')
+    search_fields = ('name', )
     list_filter = ('status',)

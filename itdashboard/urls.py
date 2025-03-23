@@ -16,7 +16,7 @@ urlpatterns = [
     path('upload/parse/', views.parse_file, name='parse_file'),       
 
     # ✅ Include DMS URLs
-    path('dms/', include('dms.urls')),   # New DMS URLs included here
+    # path('dms/', include('dms.urls')),   # New DMS URLs included here
 ]
 
 # ✅ Handle Media URL for File Uploads
