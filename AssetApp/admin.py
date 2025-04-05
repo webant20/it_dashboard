@@ -173,7 +173,8 @@ class POAdmin(admin.ModelAdmin):
     list_display = ('po_number', 'pr_number', 'create_date', 'status','description')
     
 
-    search_fields = ['po_number', 'pr_number', 'create_date', 'status']
+    search_fields = ['po_number', 'pr_number__pr_number', 'create_date', 'status']
+    # search_fields = ['po_number','status','pr_number__pr_number']
     list_display_links = ('po_number','pr_number',)
 
     def parse_button(self, obj):
