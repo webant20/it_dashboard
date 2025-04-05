@@ -10,7 +10,7 @@ from django.urls import path
 from django import forms
 from django_select2.forms import Select2Widget
 from django.utils.safestring import mark_safe
-from .models import PR, PO, Asset, Location,AssetType, AssetIssue, Contract, ContractNotification, SMTPSettings,EndUser
+from .models import PR, PO, Asset, Location,AssetType, AssetIssue, Contract, ContractNotification, POAttachment, SMTPSettings,EndUser
 from dms.models import Document, DocumentLink
 
 
@@ -155,9 +155,21 @@ class POAdminForm(forms.ModelForm):
         help_text="Type or select a PR Number"
     )
 
+class POAttachmentInline(admin.TabularInline):
+    model = POAttachment
+    extra = 1
+    fields = ('file',  'uploaded_at')
+    readonly_fields = ('uploaded_at',)
+
+    # def save_model(self, request, obj, form, change):
+    #     if not obj.uploaded_by:
+    #         obj.uploaded_by = request.user
+    #     super().save_model(request, obj, form, change)
+
+
 class POAdmin(admin.ModelAdmin):
     form = POAdminForm
-
+    inlines = [POAttachmentInline]
     list_display = ('po_number', 'pr_number', 'create_date', 'status','description')
     
 
@@ -251,7 +263,7 @@ class AssetAdmin(admin.ModelAdmin):
     search_fields = [
         'serial_number', 'sap_asset_id', 'asset_type__name', 'po_number__po_number', 
         'asset_description', 'end_user__name', 'amc_contract__contract_number', 
-        'location__location', 'location__office'  # ✅ Added office field
+        'location__location'  # ✅ Added office field
     ]
     list_filter = ['asset_type', 'po_number', 'end_user', 'amc_contract', 'location']
     list_display_links = ('asset_id',)  # Keeping asset_id as a link
@@ -386,10 +398,10 @@ class ContractAdmin(admin.ModelAdmin):
     list_filter = ('status', 'start_date', 'end_date')
     inlines = [ContractAttachmentInline]  # Add inline attachments
 
-@admin.register(ContractAttachment)
-class ContractAttachmentAdmin(admin.ModelAdmin):
-    list_display = ('contract', 'file', 'uploaded_at')
-    search_fields = ('contract__contract_number',)
+# @admin.register(ContractAttachment)
+# class ContractAttachmentAdmin(admin.ModelAdmin):
+#     list_display = ('contract', 'file', 'uploaded_at')
+#     search_fields = ('contract__contract_number',)
 
 @admin.register(ContractNotification)
 class ContractNotificationAdmin(admin.ModelAdmin):

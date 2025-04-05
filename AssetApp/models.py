@@ -45,6 +45,15 @@ class PO(models.Model):
     def __str__(self):
         return self.po_number
 
+class POAttachment(models.Model):
+    po = models.ForeignKey('PO', on_delete=models.CASCADE, related_name='attachments')
+    file = models.FileField(upload_to='po_attachments/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.file.name}"
+
 
 # Contract Model
 class Contract(models.Model):
