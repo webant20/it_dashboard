@@ -20,6 +20,7 @@ class Incident(models.Model):
         ('Closed', 'Closed')
     ]
     title = models.CharField(max_length=255)
+    category = models.ForeignKey('Category', on_delete=models.PROTECT,default=1) 
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incidents_created',null=True,blank=True)
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incidents_reported',null=True,blank=True)

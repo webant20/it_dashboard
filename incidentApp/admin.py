@@ -104,6 +104,6 @@ class IncidentAdmin(admin.ModelAdmin):
 
 admin.site.register(Incident, IncidentAdmin)
 admin.site.register(Category)
-admin.site.register(Comment, CommentAdmin)
+# admin.site.register(Comment, CommentAdmin)
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
