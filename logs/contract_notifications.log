@@ -64,3 +64,84 @@
 2025-03-05 04:37:06,356 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
 2025-03-05 04:37:06,359 - INFO - Found 1 notifications to process.
 2025-03-05 04:37:06,363 - INFO - Contract 611888: Days remaining: 2, Notification days: [2, 10]
+2025-04-05 20:03:26,410 - INFO - Script started at 2025-04-05
+2025-04-05 20:03:26,447 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: webant20
+2025-04-05 20:03:26,450 - INFO - Found 1 notifications to process.
+2025-04-05 20:03:26,455 - INFO - Contract 611888: Days remaining: 2, Notification days: [1]
+2025-04-05 20:04:31,237 - INFO - Script started at 2025-04-05
+2025-04-05 20:04:31,265 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: webant20
+2025-04-05 20:04:31,267 - INFO - Found 1 notifications to process.
+2025-04-05 20:04:31,274 - INFO - Contract 611888: Days remaining: 1, Notification days: [1]
+2025-04-05 20:04:34,380 - INFO - Notification email sent successfully for contract 611888 to tituraj.jnv@gmail.com
+2025-04-05 20:06:01,183 - INFO - Script started at 2025-04-05
+2025-04-05 20:06:01,211 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: webant20
+2025-04-05 20:06:01,214 - INFO - Found 1 notifications to process.
+2025-04-05 20:06:01,219 - INFO - Contract 611888: Days remaining: 1, Notification days: [1]
+2025-04-05 20:06:03,371 - INFO - Notification email sent successfully for contract 611888 to tituraj.jnv@gmail.com
+2025-04-05 20:06:06,663 - INFO - Notification email sent successfully for contract 611888 to tituraj_doley@oilindia.in
+2025-04-05 20:09:37,462 - INFO - Script started at 2025-04-05
+2025-04-05 20:09:37,489 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv
+2025-04-05 20:09:37,491 - INFO - Found 1 notifications to process.
+2025-04-05 20:09:37,497 - INFO - Contract 611888: Days remaining: 1, Notification days: [1]
+2025-04-05 20:09:39,718 - INFO - Notification email sent successfully for contract 611888 to tituraj.jnv@gmail.com
+2025-04-05 20:09:42,808 - INFO - Notification email sent successfully for contract 611888 to tituraj_doley@oilindia.in
+2025-04-06 09:40:44,240 - INFO - Script started at 2025-04-06
+2025-04-06 09:40:44,286 - ERROR - No SMTP settings found. Exiting.
+2025-04-06 09:41:30,801 - INFO - Script started at 2025-04-06
+2025-04-06 09:41:30,829 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 09:41:30,833 - INFO - Found 0 notifications to process.
+2025-04-06 09:42:18,753 - INFO - Script started at 2025-04-06
+2025-04-06 09:42:18,782 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
+2025-04-06 09:42:18,785 - INFO - Found 0 notifications to process.
+2025-04-06 09:42:49,642 - INFO - Script started at 2025-04-06
+2025-04-06 09:42:49,668 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
+2025-04-06 09:42:49,671 - INFO - Found 1 notifications to process.
+2025-04-06 09:42:49,675 - INFO - Contract 611888: Days remaining: 0, Notification days: [1]
+2025-04-06 09:43:35,301 - INFO - Script started at 2025-04-06
+2025-04-06 09:43:35,333 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: tituraj.jnv@gmail.com
+2025-04-06 09:43:35,336 - INFO - Found 1 notifications to process.
+2025-04-06 09:43:35,344 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 09:43:38,369 - INFO - Notification email sent successfully for contract 611888 to titturj@gmail.com
+2025-04-06 09:44:16,679 - INFO - Script started at 2025-04-06
+2025-04-06 09:44:16,708 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 09:44:16,711 - INFO - Found 1 notifications to process.
+2025-04-06 09:44:16,716 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 09:44:19,616 - INFO - Notification email sent successfully for contract 611888 to titturj@gmail.com
+2025-04-06 09:46:37,812 - INFO - Script started at 2025-04-06
+2025-04-06 09:46:37,889 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 09:46:37,892 - INFO - Found 1 notifications to process.
+2025-04-06 09:46:37,899 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 09:46:37,920 - ERROR - Failed to send email for contract 611888 to titturj@gmail.com: python3: can't open file '/home/it_admin/django_projects/it_dashboard/AssetApp/scripts/send_email.py': [Errno 2] No such file or directory
+
+2025-04-06 09:47:26,349 - INFO - Script started at 2025-04-06
+2025-04-06 09:47:26,377 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 09:47:26,380 - INFO - Found 1 notifications to process.
+2025-04-06 09:47:26,384 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 09:47:29,080 - INFO - Notification email sent successfully for contract 611888 to titturj@gmail.com
+2025-04-06 10:41:45,584 - INFO - Script started at 2025-04-06
+2025-04-06 10:41:45,607 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 10:41:45,609 - INFO - Found 1 notifications to process.
+2025-04-06 10:41:45,613 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 10:41:45,627 - ERROR - Failed to send email for contract 611888 to titturj@gmail.com: python3: can't open file '/home/it_admin/django_projects/it_dashboard/send_email.py': [Errno 2] No such file or directory
+
+2025-04-06 10:43:14,498 - INFO - Script started at 2025-04-06
+2025-04-06 10:43:14,514 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 10:43:14,515 - INFO - Found 1 notifications to process.
+2025-04-06 10:43:14,517 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 10:43:14,552 - ERROR - Failed to send email for contract 611888 to titturj@gmail.com: python3: can't open file '/home/it_admin/django_projects/it_dashboard/send_email.py': [Errno 2] No such file or directory
+
+2025-04-06 10:45:12,546 - INFO - Script started at 2025-04-06
+2025-04-06 10:45:12,569 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 10:45:12,570 - INFO - Found 1 notifications to process.
+2025-04-06 10:45:12,573 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 10:45:15,267 - INFO - Notification email sent successfully for contract 611888 to titturj@gmail.com
+2025-04-06 10:52:34,679 - INFO - Script started at 2025-04-06
+2025-04-06 10:52:34,714 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 10:52:34,721 - INFO - Found 1 notifications to process.
+2025-04-06 10:52:34,735 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 10:52:42,312 - INFO - Notification email sent successfully for contract 611888 to titturj@gmail.com
+2025-04-06 10:53:21,500 - INFO - Script started at 2025-04-06
+2025-04-06 10:53:21,531 - INFO - Using SMTP Server: smtp.gmail.com, Port: 465, User: No Auth
+2025-04-06 10:53:21,536 - INFO - Found 1 notifications to process.
+2025-04-06 10:53:21,544 - INFO - Contract 611888: Days remaining: 0, Notification days: [1, 0]
+2025-04-06 10:53:21,550 - INFO - Notification already sent to titturj@gmail.com for contract_expiry_611888 today. Skipping.

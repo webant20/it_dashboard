@@ -10,7 +10,7 @@ from django.urls import path
 from django import forms
 from django_select2.forms import Select2Widget
 from django.utils.safestring import mark_safe
-from .models import PR, PO, Asset, Location,AssetType, AssetIssue, Contract, ContractNotification, POAttachment, SMTPSettings,EndUser
+from .models import PR, PO, Asset, Location,AssetType, AssetIssue, Contract, POAttachment, EndUser
 from dms.models import Document, DocumentLink
 
 
@@ -382,10 +382,10 @@ admin.site.register(Asset, AssetAdmin)
 admin.site.register(PR, PRAdmin)
 admin.site.register(PO, POAdmin)
 admin.site.register(AssetType)
-admin.site.register(AssetIssue)
+# admin.site.register(AssetIssue)
 
 from django.contrib import admin
-from .models import Contract, ContractNotification, SMTPSettings, ContractAttachment
+from .models import Contract, ContractAttachment
 
 class ContractAttachmentInline(admin.TabularInline):  # Inline for attachments
     model = ContractAttachment
@@ -404,15 +404,15 @@ class ContractAdmin(admin.ModelAdmin):
 #     list_display = ('contract', 'file', 'uploaded_at')
 #     search_fields = ('contract__contract_number',)
 
-@admin.register(ContractNotification)
-class ContractNotificationAdmin(admin.ModelAdmin):
-    list_display = ('contract', 'email_ids', 'days_before_expiry')
-    search_fields = ('contract__contract_number', 'email_ids')
+# @admin.register(ContractNotification)
+# class ContractNotificationAdmin(admin.ModelAdmin):
+#     list_display = ('contract', 'email_ids', 'days_before_expiry')
+#     search_fields = ('contract__contract_number', 'email_ids')
 
-@admin.register(SMTPSettings)
-class SMTPSettingsAdmin(admin.ModelAdmin):
-    list_display = ('smtp_server', 'smtp_port', 'smtp_username', 'use_tls', 'use_ssl')
-    search_fields = ('smtp_server', 'smtp_username')
+# @admin.register(SMTPSettings)
+# class SMTPSettingsAdmin(admin.ModelAdmin):
+#     list_display = ('smtp_server', 'smtp_port', 'smtp_username', 'use_tls', 'use_ssl')
+#     search_fields = ('smtp_server', 'smtp_username')
 
 @admin.register(EndUser)
 class EndUserAdmin(admin.ModelAdmin):

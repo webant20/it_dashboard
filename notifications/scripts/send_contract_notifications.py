@@ -4,6 +4,8 @@ import django
 import logging
 import subprocess
 from django.utils import timezone
+# from notifications.models import NotificationLog,ContractNotification, SMTPSettings
+
 
 # Set up logging
 LOG_FILE = "/home/it_admin/django_projects/it_dashboard/logs/contract_notifications.log"
@@ -19,14 +21,17 @@ logger = logging.getLogger(__name__)
 
 # Set up Django environment
 sys.path.append("/home/it_admin/django_projects/it_dashboard")
+# sys.path.append("/home/it_admin/django_projects/it_dashboard/notifications/scripts")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "itdashboard.settings")
+
 django.setup()
 
 # Import models
-from AssetApp.models import ContractNotification, SMTPSettings
+# from AssetApp.models import ContractNotification, SMTPSettings
+from notifications.models import NotificationLog,ContractNotification, SMTPSettings
 
 # Path to your send_email.py script
-SEND_EMAIL_SCRIPT = "/home/it_admin/django_projects/it_dashboard/AssetApp/scripts/send_email.py"
+SEND_EMAIL_SCRIPT = "/home/it_admin/django_projects/it_dashboard/notifications/scripts/send_email.py"
 
 def send_contract_expiry_notifications():
     today = timezone.now().date()
@@ -86,6 +91,17 @@ def send_contract_expiry_notifications():
 
             # Send email using send_email.py script
             for email in email_list:
+                notification_type = f"contract_expiry_{contract.contract_number}"    
+                 # Check if notification already sent today
+                already_sent = NotificationLog.objects.filter(
+                    email=email,
+                    notification_type=notification_type,
+                    sent_at__date=today
+                ).exists()
+
+                if already_sent:
+                    logger.info(f"Notification already sent to {email} for {notification_type} today. Skipping.")
+                    continue
                 try:
                     command = [
                         "python3", SEND_EMAIL_SCRIPT,
@@ -99,6 +115,11 @@ def send_contract_expiry_notifications():
                         message
                     ]
                     subprocess.run(command, check=True, capture_output=True, text=True)
+                     # Log success
+                    NotificationLog.objects.create(
+                        email=email,
+                        notification_type=notification_type
+                    )
 
                     logger.info(f"Notification email sent successfully for contract {contract.contract_number} to {email}")
                     print(f"Notification email sent successfully for contract {contract.contract_number} to {email}")

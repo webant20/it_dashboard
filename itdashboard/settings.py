@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'cartridge_stock',
     'DashboardApp',
     'dms',
+    'notifications'
 ]
 
 MEDIA_URL = '/media/'
